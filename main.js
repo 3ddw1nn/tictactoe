@@ -66,12 +66,15 @@ const displayController = (()=>{
     let userName1Select = document.querySelector(".userName1")
     userName1Select.addEventListener("click", () => {
         player1.getPlayer = prompt("Set Player 1 Name",player1.getPlayer);
-        console.log(player1);
+        p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+        console.log(player1.getPlayer);
+
     })
     let userName2Select = document.querySelector(".userName2")
     userName2Select.addEventListener("click", () => {
         player2.getPlayer = prompt("Set Player 2 Name",player2.getPlayer);
         console.log(player2);
+        p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
     })
     let quit = document.querySelector(".quit")
     quit.addEventListener("click", () => {
