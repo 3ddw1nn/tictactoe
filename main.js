@@ -5,15 +5,15 @@ const board = document.querySelector(".gameBoard")
 //make gameboard as an array and store some values inside
 const gameModule = (()=>{
     const gameBoard =[
-        "X",
-        "O",
-        "X",
-        "O",
-        "X",
-        "O",
-        "X",
-        "O",
-        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
     ]
     console.log(gameBoard);
     return {
@@ -23,96 +23,213 @@ const gameModule = (()=>{
 
 })();
 
-const playerFactory = (player, marker) => {
+
+const playerFactory = (player, marker, playerScore) => {
     const getPlayer = player;
     const getMarker = marker;
-    const win = {}
-    return {getPlayer, getMarker};
-  };
-const player1 = playerFactory("player1", "X");
+    const getPlayerScore = playerScore;
+
+    return {getPlayer, getMarker, getPlayerScore
+    };
+};
+
+let turn = 0;
+const player1 = playerFactory("player1", "X", 0);
+const player2 = playerFactory("player2", "O", 0);
 console.log(player1);
-createGameBoard();
-function createGameBoard(){
-    for(i = 0; i < gameModule.gameBoard.length ; i++) {
-        let cell = document.createElement("div")
-        board.appendChild(cell);
-        cell.classList.add("cell")
-        cell.setAttribute("data-cell",i + 1);
+let winningMarker = "";
 
+const displayController = (()=>{
+    'use strict';
+    const winGame = function (){
+        if(player1.getPlayerScore == 3){
+            alert(player1.getPlayer + " Wins the Game")
+            player1.getPlayerScore = 0;
+            player2.getPlayerScore = 0;
+        } else if(player2.getPlayerScore == 3){
+            alert(player2.getPlayer + " Wins the Game")
+            player1.getPlayerScore = 0;
+            player2.getPlayerScore = 0;
+        }
     }
-}
-function addMarkerGameboard (){
-    let cellList = document.querySelectorAll(".cell")
-    cellList.forEach(eachCell => {
-        eachCell.addEventListener("click", () => {
-            eachCell.textContent = "X"
-        });
+    let userName1Select = document.querySelector(".userName1")
+    userName1Select.addEventListener("click", () => {
+        player1.getPlayer = prompt("Set Player 1 Name",player1.getPlayer);
+        console.log(player1);
     })
-}
-addMarkerGameboard();
+    let userName2Select = document.querySelector(".userName2")
+    userName2Select.addEventListener("click", () => {
+        player2.getPlayer = prompt("Set Player 2 Name",player2.getPlayer);
+        console.log(player2);
+    })
+    let xSelect = document.querySelector(".X")
+    let oSelect = document.querySelector(".O")
+    xSelect.addEventListener("click", () => {
+        player1.getMarker = "X";
+        player2.getMarker = "O";
+        xSelect.style.background= "rgb(173, 250, 208)";
+        oSelect.style.background= "rgb(255, 255, 255)"; 
+        console.log(player1);
+        console.log(player2);
+        _resetGame();
+    })
+    oSelect.addEventListener("click", () => {
+        player1.getMarker = "O";
+        player2.getMarker = "X";
+        oSelect.style.background= "rgb(173, 250, 208)";
+        xSelect.style.background= "rgb(255, 255, 255)"; 
+        console.log(player1);
+        console.log(player2);
+        _resetGame();
+    })
 
-let turn = 0
-// add turn variable where it incriments ++
+    function _assignWinner(){
+        if(winningMarker == player1.getMarker) {
+            alert(player1.getPlayer + " Won Round")
+            player1.getPlayerScore++;
+            console.log(player1);
+        }
+        else if (winningMarker == player2.getMarker) {
+            alert("player 2 won")
+            player2.getPlayerScore++;
+            console.log(player2);
+        }else{
+            console.log("did not work")
+        }
+        winGame();
+        _resetGame();
+    }
+    function _resetGame(){
+        turn = 0;
+        let resetList = document.querySelectorAll(".cell")
+            resetList.forEach(eachReset => {
+                eachReset.textContent = "";
+            })
+        
+        gameModule.gameBoard = gameModule.gameBoard.map(x => "");
+        console.log(gameModule.gameBoard); 
+        console.log(turn);  
+    }    
+
+    const createGameBoard = function(){
+        for(let i = 0; i < gameModule.gameBoard.length ; i++) {
+            let newCell = document.createElement("div")
+            board.appendChild(newCell);
+            newCell.classList.add("cell")
+            newCell.setAttribute("data-cell",i + 1);
+        }
+    }
+
+    const addMarkerGameBoard = function(){
+        let cellList = document.querySelectorAll(".cell")
+        cellList.forEach(eachCell => {
+            eachCell.addEventListener("click", () => {
+                if(turn % 2 == 0) {
+                    if(!eachCell.textContent){
+                        eachCell.textContent = player1.getMarker;
+                        turn++;
+                        let cellID = eachCell.getAttribute("data-cell");
+                        console.log("cellID : " + cellID);
+                        gameModule.gameBoard.splice(cellID - 1,1,player1.getMarker);
+                    }
+                }
+                else {
+                    if(!eachCell.textContent){
+                        eachCell.textContent = player2.getMarker;
+                        turn++;
+                        let cellID = eachCell.getAttribute("data-cell");
+                        console.log("cellID : " + cellID);
+                        gameModule.gameBoard.splice(cellID - 1,1,player2.getMarker);
+                    }
+                }
+                console.log("turn: " + turn);
+                console.log(gameModule.gameBoard);
+                displayController.columnWin();
+                displayController.rowWin();
+                displayController.diagonalWin();
+            });
+        })
+    }
+    const columnWin = function (){
+        
+        for(let i = 0; i < 3; i++){
+            let columns = [];
+            for (let j=0; j < 3; j++){
+                let columnMarker = gameModule.gameBoard[ j * 3 + i]
+                columns.push(columnMarker);
+                }
+                console.log(columns)
+                if ((columns.every(val => val === "X")) || (columns.every(val => val === "O"))){
+                    winningMarker = columns[0];
+                    _assignWinner();
+                }else {
+                    console.log("did not win yet")
+                }
+          }
+    
+    }
+    const rowWin = function (){
+        for(let i = 0; i < 3; i++){
+            let rows = [];
+            for (let j=0; j < 3; j++){
+                let rowMarker = gameModule.gameBoard[ j + i + i + i]
+                rows.push(rowMarker);
+            }
+            console.log(rows);
+            if ((rows.every(val => val === "X")) || (rows.every(val => val === "O"))) {
+                winningMarker = rows[0];
+                _assignWinner();
+
+            }else {
+                console.log("did not win yet")
+            }
+        }
+    }
+    const diagonalWin = function (){
+            let diagonal1 = [];
+
+            for (let i = 0; i < 3; i++){
+                let diagonal1Marker = gameModule.gameBoard[ i * 4]
+                diagonal1.push(diagonal1Marker);
+            };
+
+            if ((diagonal1.every(val => val === "X")) || (diagonal1.every(val => val === "O"))) {
+                winningMarker = diagonal1[0];
+                _assignWinner();
+            } else {
+                console.log("did not win yet")
+            };
+
+            let diagonal2 = [];
+
+            for (let j = 0; j < 3; j++){
+                let diagonal2Marker = gameModule.gameBoard[ j + j + 2]
+                diagonal2.push(diagonal2Marker);
+            }
+            console.log("this is diagonal1: " + diagonal1);
+            console.log("this is Diagonal2: " + diagonal2);
+
+            if ((diagonal2.every(val => val === "X")) || (diagonal2.every(val => val === "O"))) {
+                winningMarker = diagonal2[0];
+                _assignWinner();
+            }else {
+                console.log("did not win yet")
+            }
+    }
+
+    return {
+        createGameBoard,
+        addMarkerGameBoard,
+        columnWin,
+        rowWin,
+        diagonalWin,
+        winGame,
+    }
 
 
-// build the functions that allow the players to add marks to a specific
-// spot on the board. and then tie it to the DOM
-//letting players click on the gameboard to place their marker
+})();
+displayController.createGameBoard();
+displayController.addMarkerGameBoard();
 
-// let n = 3;
-// let board = document.querySelector(".board")
-// function makecell() {
-//     for (let i = 0; i < n; i++) {
-//         let row = document.createElement("div");
-//         row.classList.add("gridRow");
-//         board.append(row);
-//     };
-// };
-// makecell();
 
-// function makeColumns() {
-//     const gridcell = document.querySelectorAll(".gridRow")
-//     gridcell.forEach(forEachRow => {
-//     for(let i = 0; i < n; i++) {
-//         let newColumn = document.createElement("div");
-//         newColumn.classList.add("gridColumn");
-//         forEachRow.append(newColumn);
-//     };}   
-// );};
-// makeColumns();
-// selectGrid();
-// function selectGrid(){
-//     const gridCell = document.querySelectorAll(".gridColumn");
-//     gridCell.forEach(cell => { 
-//         cell.addEventListener("click", e => {
-//             //put marker in  this grid
-//             cell.textContent = "";
-//         });
-//     }
-//     )};
-// hoverColor();
-// const gameBoard = (() => {
-//     const add = (a, b) => a + b;
-//     const sub = (a, b) => a - b;
-//     const mul = (a, b) => a * b;
-//     const div = (a, b) => a / b;
-//     return {
-//       add,
-//       sub,
-//       mul,
-//       div,
-//     };
-//   })();
-  
-//   calculator.add(3,5)
 
-// const playerFactory = (name, age) => {
-//     const sayHello = () => console.log('hello!');
-//     return { name, age, sayHello };
-//   };
-  
-//   const jeff = playerFactory('jeff', 27);
-  
-//   console.log(jeff.name); // 'jeff'
-  
-//   jeff.sayHello();
