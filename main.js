@@ -34,22 +34,33 @@ const playerFactory = (player, marker, playerScore) => {
 };
 
 let turn = 0;
-const player1 = playerFactory("player1", "X", 0);
-const player2 = playerFactory("player2", "O", 0);
+const player1 = playerFactory("Player 1", "X", 0);
+const player2 = playerFactory("Player 2", "O", 0);
 console.log(player1);
 let winningMarker = "";
 
+
+
 const displayController = (()=>{
     'use strict';
+    let p1Score = document.querySelector(".p1Score")
+    p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+    let p2Score = document.querySelector(".p2Score")
+    p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
+
     const winGame = function (){
         if(player1.getPlayerScore == 3){
             alert(player1.getPlayer + " Wins the Game")
             player1.getPlayerScore = 0;
             player2.getPlayerScore = 0;
+            p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+            p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
         } else if(player2.getPlayerScore == 3){
             alert(player2.getPlayer + " Wins the Game")
             player1.getPlayerScore = 0;
             player2.getPlayerScore = 0;
+            p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+            p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
         }
     }
     let userName1Select = document.querySelector(".userName1")
@@ -62,6 +73,21 @@ const displayController = (()=>{
         player2.getPlayer = prompt("Set Player 2 Name",player2.getPlayer);
         console.log(player2);
     })
+    let quit = document.querySelector(".quit")
+    quit.addEventListener("click", () => {
+        if(turn % 2 == 0){
+            player2.getPlayerScore++
+            p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+            p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
+        }else {
+            player1.getPlayerScore++
+            p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
+            p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
+        }
+        _resetGame();
+
+    })
+
     let xSelect = document.querySelector(".X")
     let oSelect = document.querySelector(".O")
     xSelect.addEventListener("click", () => {
@@ -87,11 +113,13 @@ const displayController = (()=>{
         if(winningMarker == player1.getMarker) {
             alert(player1.getPlayer + " Won Round")
             player1.getPlayerScore++;
+            p1Score.textContent = player1.getPlayer + " : "+ player1.getPlayerScore;
             console.log(player1);
         }
         else if (winningMarker == player2.getMarker) {
             alert("player 2 won")
             player2.getPlayerScore++;
+            p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
             console.log(player2);
         }else{
             console.log("did not work")
@@ -108,7 +136,8 @@ const displayController = (()=>{
         
         gameModule.gameBoard = gameModule.gameBoard.map(x => "");
         console.log(gameModule.gameBoard); 
-        console.log(turn);  
+        console.log(turn);
+
     }    
 
     const createGameBoard = function(){

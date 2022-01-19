@@ -1,7 +1,13 @@
+body{
+    background-color: antiquewhite;
+}
 .title{
     display:flex;
     justify-content: center;
 
+}
+h2{
+    color: brown;
 }
 .gameContainer{
     display:flex;
@@ -15,6 +21,7 @@
     width: 30rem;
     margin: 1rem 10rem 2rem 10rem;
     border: solid;
+    border-color: darkblue;
 }
 .cell {
     border: 0.1rem solid rgb(143, 125, 125);
@@ -24,6 +31,7 @@
     font-size: 7rem;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
+    background-color: rgb(255, 255, 255);
 }
 .playerMarkers{
     display:flex;
@@ -34,18 +42,32 @@ button{
     border-radius: 20px;
     padding: 5px 30px;
     margin-top: 10px;
-    border:solid;
-    border-width: 0.01rem;
+    border:none;
     color: rgb(0, 0, 0);
     background-color: rgb(255, 255, 255);
 
 }
 .X{
     background-color: rgb(173, 250, 208);
+    margin-right: 1rem;
 
 }
 .userNameContainer{
     display:flex;
     justify-content: center;
 
+}
+.userName1{
+    margin-right: 1rem;
+
+}
+.scoreBoard{
+    display: flex;
+    justify-content: center;
+}
+.p1Score{
+    margin-right: 1rem;
+}
+.quit{
+    margin-left: 1rem;
 }
