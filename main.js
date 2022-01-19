@@ -120,7 +120,7 @@ const displayController = (()=>{
             console.log(player1);
         }
         else if (winningMarker == player2.getMarker) {
-            alert("player 2 won")
+            alert(player2.getPlayer + " Won Round")
             player2.getPlayerScore++;
             p2Score.textContent = player2.getPlayer + " : "+ player2.getPlayerScore;
             console.log(player2);
